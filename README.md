@@ -9,5 +9,5 @@ Faire la commande
 Pour installer en global nodemon et ainsi activer le *watch* node.
 A l'étape 8, pour lancer le programme, aller à l'emplacment du dossier via le CLI puis lancer la commande 
 
-    nodemon app.js
+    nodemon server/app.js
 
