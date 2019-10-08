@@ -11,9 +11,9 @@ const {
 
 //dummy data
 var books = [
-  { name: "Harry Potter 1", genre: "Enfant", id: "1" },
-  { name: "Harry Potter 2", genre: "Jeunesse", id: "2" },
-  { name: "Harry POtter 7", genre: "Fantastique", id: "3" }
+  { name: "Harry Potter 1", genre: "Enfant", id: "1", authorId: "1" },
+  { name: "Harry Potter 2", genre: "Jeunesse", id: "2", authorId: "2" },
+  { name: "Harry POtter 7", genre: "Fantastique", id: "3", authorId: "3" }
 ];
 
 var authors = [
@@ -29,7 +29,14 @@ const BookType = new GraphQLObjectType({
   fields: () => ({
     id: { type: GraphQLID },
     name: { type: GraphQLString },
-    genre: { type: GraphQLString }
+    genre: { type: GraphQLString },
+    author: {
+      type: AuthorType,
+      resolve(parent, args) {
+        console.log(parent);
+        return lodash.find(authors, { id: parent.authorId });
+      }
+    }
   })
 
   //utilisation de fields car multipleTypes en rapport les uns avec les autres
