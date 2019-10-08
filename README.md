@@ -7,7 +7,8 @@ Faire la commande
     npm install nodemon -g
     
 Pour installer en global nodemon et ainsi activer le *watch* node.
-A l'étape 8, pour lancer le programme, aller à l'emplacment du dossier via le CLI puis lancer la commande 
+Pour lancer le programme, aller à l'emplacment du dossier via le CLI puis lancer la commande 
 
     nodemon server/app.js
 
+Pour faire des query graphql, aller sur **localhost:4000/graphql**, vous accéderez à l'interface *GraphiQL*.
