@@ -6,14 +6,19 @@ const {
   GraphQLString,
   GraphQLSchema,
   GraphQLID,
-  GraphQLInt
+  GraphQLInt,
+  GraphQLList
 } = graphql;
 
 //dummy data
-var books = [
+var Books = [
   { name: "Harry Potter 1", genre: "Enfant", id: "1", authorId: "1" },
   { name: "Harry Potter 2", genre: "Jeunesse", id: "2", authorId: "2" },
-  { name: "Harry POtter 7", genre: "Fantastique", id: "3", authorId: "3" }
+  { name: "Harry POtter 3", genre: "Fantastique", id: "3", authorId: "2" },
+  { name: "Harry POtter 4", genre: "Fantastique", id: "4", authorId: "2" },
+  { name: "Harry POtter 5", genre: "Fantastique", id: "5", authorId: "3" },
+  { name: "Harry POtter 6", genre: "Fantastique", id: "6", authorId: "3" },
+  { name: "Harry POtter 7", genre: "Fantastique", id: "7", authorId: "3" }
 ];
 
 var authors = [
@@ -39,8 +44,8 @@ const BookType = new GraphQLObjectType({
     }
   })
 
-  //utilisation de fields car multipleTypes en rapport les uns avec les autres
-  //explication à venir
+  //utilisation de fields car multipleTypes en rapport les uns avec les autres.
+  //On met une fonction pour pouvoir appeller cette const avant, c'est surtout utile pour l'instant pour  authorType
 });
 
 //Schema pour les authors
@@ -50,13 +55,20 @@ const AuthorType = new GraphQLObjectType({
   fields: () => ({
     id: { type: GraphQLID },
     name: { type: GraphQLString },
-    age: { type: GraphQLInt }
+    age: { type: GraphQLInt },
+    books: {
+      type: new GraphQLList(BookType),
+      resolve(parent, args) {
+        return lodash.filter(Books, { authorId: parent.id });
+      }
+    }
   })
 });
 
 const RootQuery = new GraphQLObjectType({
   name: "RootQueryType",
   fields: {
+    //sortie books avec possibilité liaison auteur
     book: {
       // quand quelqu'un recher un book, on arrive ici
       type: BookType, //le type de data que on recherche, défini juste au dessus
@@ -66,16 +78,33 @@ const RootQuery = new GraphQLObjectType({
         //
         //code to get data from db
 
-        return lodash.find(books, { id: args.id });
+        return lodash.find(Books, { id: args.id });
 
         //
       }
     },
+
+    //Sortie author avec pôssibilité liaison livre
     author: {
       type: AuthorType,
       args: { id: { type: GraphQLID } },
       resolve(parent, args) {
         return lodash.find(authors, { id: args.id });
+      }
+    },
+
+    //Listage des tous les auteurs
+    authors: {
+      type: new GraphQLList(AuthorType),
+
+      resolve(parent, args) {
+        return authors;
+      }
+    },
+    books: {
+      type: new GraphQLList(BookType),
+      resolve(parent, args) {
+        return Books;
       }
     }
   }
