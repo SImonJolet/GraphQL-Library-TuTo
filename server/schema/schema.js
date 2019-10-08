@@ -1,7 +1,13 @@
 const graphql = require("graphql");
 const lodash = require("lodash");
 
-const { GraphQLObjectType, GraphQLString, GraphQLSchema, GraphQLID } = graphql;
+const {
+  GraphQLObjectType,
+  GraphQLString,
+  GraphQLSchema,
+  GraphQLID,
+  GraphQLInt
+} = graphql;
 
 //dummy data
 var books = [
@@ -9,6 +15,14 @@ var books = [
   { name: "Harry Potter 2", genre: "Jeunesse", id: "2" },
   { name: "Harry POtter 7", genre: "Fantastique", id: "3" }
 ];
+
+var authors = [
+  { name: "Simon", age: "27", id: "1" },
+  { name: "Phil", age: "22", id: "2" },
+  { name: "Dydy", age: "18", id: "3" }
+];
+
+//Schema pour les books
 
 const BookType = new GraphQLObjectType({
   name: "Book",
@@ -20,6 +34,17 @@ const BookType = new GraphQLObjectType({
 
   //utilisation de fields car multipleTypes en rapport les uns avec les autres
   //explication à venir
+});
+
+//Schema pour les authors
+
+const AuthorType = new GraphQLObjectType({
+  name: "Author",
+  fields: () => ({
+    id: { type: GraphQLID },
+    name: { type: GraphQLString },
+    age: { type: GraphQLInt }
+  })
 });
 
 const RootQuery = new GraphQLObjectType({
@@ -37,6 +62,13 @@ const RootQuery = new GraphQLObjectType({
         return lodash.find(books, { id: args.id });
 
         //
+      }
+    },
+    author: {
+      type: AuthorType,
+      args: { id: { type: GraphQLID } },
+      resolve(parent, args) {
+        return lodash.find(authors, { id: args.id });
       }
     }
   }
